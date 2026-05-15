@@ -1,0 +1,159 @@
+# ==============================================================================
+# BÀI 1: PHÂN TÍCH ĐỘ PHỨC TẠP CƠ BẢN (lab1_bai1.py)
+# ==============================================================================
+
+# Snippet 1 – Vòng lặp for đơn
+def snippet_1(n): 
+    total = 0            # 1
+    for i in range(n):   # n
+        total = total + 1 # 2
+    return total         # 1
+
+# T(n) = 2n + 2 => O(n)
+
+
+# Snippet 2 – Vòng lặp for lồng nhau 
+def snippet_2(n): 
+    count = 0            # 1
+    for i in range(n):   # n
+        for j in range(n): # n
+            count += 1   # 2
+    return count         # 1
+
+# T(n) = 2n^2 + 2 => O(n^2)
+
+
+# Snippet 3 – Vòng while chia đôi n 
+def snippet_3(n): 
+    steps = 0            # 1
+    while n > 0:         # log2(n)
+        n = n // 2       # 2
+        steps += 1       # 2
+    return steps         # 1
+
+# T(n) = 4*log2(n) + 2 => O(log n)
+
+
+# Snippet 4 – Vòng for + hàm gọi O(1) 
+def constant_work(): 
+    x = 1                # 1
+    y = 2                # 1
+    z = x + y            # 2
+    return z             # 1
+# T(n) = 5 => O(1)
+
+def snippet_4(n):
+    for i in range(n):   # n
+        constant_work()  # 5
+
+# T(n) = 5n => O(n)
+
+
+# ==============================================================================
+# BÀI 2: PHÂN TÍCH ĐỘ PHỨC TẠP NÂNG CAO (lab1_bai2.py)
+# ==============================================================================
+
+# Snippet 5 – Vòng for với range(i) 
+def snippet_5(n): 
+    total = 0            # 1
+    for i in range(n):   # n
+        for j in range(i): # ~n/2
+            total += 1   # 2
+    return total         # 1
+
+# T(n) = n^2 - n + 2 => O(n^2)
+
+
+# Snippet 6 – Vòng while + for 
+def snippet_6(n): 
+    k = 1                # 1
+    total = 0            # 1
+    while k < n:         # log2(n)
+        for i in range(n): # n
+            total += 1   # 2
+        k = k * 2        # 2
+    return total         # 1
+
+# T(n) = 2*n*log2(n) + 2*log2(n) + 3 => O(n log n)
+
+
+# Snippet 7 – Duyệt list + toán tử in (list) 
+def snippet_7(arr): 
+    count = 0            # 1
+    for x in arr:        # n
+        if x in arr:     # n
+            count += 1   # 2
+    return count         # 1
+
+# T(n) = n^2 + 2n + 2 => O(n^2)
+
+
+# Snippet 8 – Dùng set để tối ưu phép in 
+def snippet_8(arr): 
+    s = set(arr)         # n
+    count = 0            # 1
+    for x in arr:        # n
+        if x in s:       # 1
+            count += 1   # 2
+    return count         # 1
+
+# T(n) = 4n + 2 => O(n)
+
+
+# ==============================================================================
+# BÀI 3: TỐI ƯU THUẬT TOÁN TỪ O(n^2) XUỐNG O(n) (lab1_bai3.py)
+# ==============================================================================
+
+import time 
+import random 
+
+# Đoạn code ban đầu O(n^2)
+def two_sum_quadratic(arr, target): 
+    n = len(arr)         # 1
+    for i in range(n):   # n
+        for j in range(i + 1, n): # ~n/2
+if arr[i] + arr[j] == target: # 2
+                return (i, j) 
+    return None          # 1
+
+# T(n) ≈ n^2 => O(n^2)
+
+
+# Phiên bản tối ưu O(n)
+def two_sum_linear(arr, target): 
+    seen = {}            # 1
+    for i in range(len(arr)): # n
+        complement = target - arr[i] # 2
+        if complement in seen:       # 1
+            return (seen[complement], i) 
+        seen[arr[i]] = i # 1
+    return None          # 1
+
+# T(n) = 4n + 2 => O(n)
+
+
+if __name__ == "__main__":
+    small_n = 5000
+    arr_small = list(range(small_n))
+    random.shuffle(arr_small)
+    target_small = arr_small[100] + arr_small[4000]
+
+    start = time.time() 
+    res_quad = two_sum_quadratic(arr_small, target_small) 
+    end_quad = time.time() - start
+    print(f"O(n^2): {res_quad} | {end_quad:.6f}s") 
+
+    start = time.time() 
+    res_lin_small = two_sum_linear(arr_small, target_small) 
+    end_lin_small = time.time() - start
+    print(f"O(n):   {res_lin_small} | {end_lin_small:.6f}s") 
+
+    large_n = 100000
+    arr_large = list(range(large_n)) 
+    random.shuffle(arr_large) 
+    target_large = arr_large[123] + arr_large[9876] 
+
+    start = time.time() 
+    res_large = two_sum_linear(arr_large, target_large) 
+    end_large = time.time() - start
+    print(f"O(n) - Large: {res_large} | {end_large:.6f}s")
